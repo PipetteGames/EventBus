@@ -1,0 +1,2 @@
+# EventBus
+Unity で利用可能な汎用性のあるEventBusパターン実装コアパッケージ
