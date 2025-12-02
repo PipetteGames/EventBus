@@ -1,0 +1,21 @@
+{
+  "name": "com.pipettegames.eventbus",
+  "version": "0.1.0",
+  "displayName": "EventBus",
+  "description": "A general-purpose EventBus system for Unity by Pipette Games.",
+  "unity": "2022.2",
+  "keywords": [
+    "event",
+    "eventbus"
+  ],
+  "author": {
+    "name": "Pipette Games",
+    "email": "pipettegames@gmail.com",
+    "url": "https://github.com/PipetteGames"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PipetteGames/EventBus.git"
+  }
+}
