@@ -27,6 +27,8 @@ Unity で利用可能な汎用的な EventBus パターン実装パッケージ�
 }
 ```
 
+**特定のバージョンを使用したい場合**: URL の末尾にバージョン指を追加（例: `https://github.com/PipetteGames/EventBus.git?path=Packages/EventBus#v0.1.0`）。
+
 ## 基本的な使い方
 
 ### 1. イベントクラスの定義
