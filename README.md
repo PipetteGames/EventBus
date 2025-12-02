@@ -14,7 +14,7 @@ Unity で利用可能な汎用的な EventBus パターン実装パッケージ�
 
 1. Unity Package Manager を開く。
 2. 「Add package from git URL」を選択。
-3. URL: `https://github.com/PipetteGames/EventBus.git` を入力。
+3. URL: `https://github.com/PipetteGames/EventBus.git?path=Packages/EventBus` を入力。
 4. インストール完了。
 
 または、Packages/manifest.json に以下を追加:
@@ -22,7 +22,7 @@ Unity で利用可能な汎用的な EventBus パターン実装パッケージ�
 ```json
 {
   "dependencies": {
-    "com.pipettegames.eventbus": "https://github.com/PipetteGames/EventBus.git"
+    "com.pipettegames.eventbus": "https://github.com/PipetteGames/EventBus.git?path=Packages/EventBus"
   }
 }
 ```
