@@ -35,7 +35,7 @@ URL の末尾にバージョン指定を追加
 
 ## 基本的な使い方
 
-### 1. イベントクラスの定義
+### 1. イベント構造体の定義
 
 ```csharp
 using PipetteGames.Events.Interfaces;
