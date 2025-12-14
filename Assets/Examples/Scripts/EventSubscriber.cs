@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PipetteGames.EventBus.Examples
+namespace PipetteGames.EventBusExamples
 {
     public class EventSubscriber : MonoBehaviour
     {

@@ -1,4 +1,6 @@
-namespace PipetteGames.EventBus.Examples
+using PipetteGames.Events.Interfaces;
+
+namespace PipetteGames.EventBusExamples
 {
     public class DemoEvent : IEvent
     {

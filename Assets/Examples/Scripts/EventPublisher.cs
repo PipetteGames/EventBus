@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PipetteGames.EventBus.Examples
+namespace PipetteGames.EventBusExamples
 {
     public class EventPublisher : MonoBehaviour
     {

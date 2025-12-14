@@ -1,6 +1,8 @@
+using PipetteGames.Events.Implements;
+using PipetteGames.Events.Interfaces;
 using UnityEngine;
 
-namespace PipetteGames.EventBus.Examples
+namespace PipetteGames.EventBusExamples
 {
     public class EventBusManager : MonoBehaviour
     {

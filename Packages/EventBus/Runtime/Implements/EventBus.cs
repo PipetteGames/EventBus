@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PipetteGames.Events.Interfaces;
 
-namespace PipetteGames.EventBus
+namespace PipetteGames.Events.Implements
 {
     public class EventBus : IEventBus
     {

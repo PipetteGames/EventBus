@@ -1,7 +1,9 @@
 {
-    "name": "EventBus.Runtime",
-    "rootNamespace": "PipetteGames.EventBus",
-    "references": [],
+    "name": "PipetteGames.EventBus.Implements",
+    "rootNamespace": "PipetteGames.Events.Implements",
+    "references": [
+        "GUID:9de49917ad5bc124987ef835416281ce"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

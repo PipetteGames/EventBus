@@ -1,6 +1,6 @@
 using System;
 
-namespace PipetteGames.EventBus
+namespace PipetteGames.Events.Interfaces
 {
     public interface IEventBus
     {
