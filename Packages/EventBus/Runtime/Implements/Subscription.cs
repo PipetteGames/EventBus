@@ -1,7 +1,7 @@
 using System;
 using PipetteGames.Events.Interfaces;
 
-namespace PipetteGames.Events.Implements
+namespace PipetteGames.Events
 {
     public class Subscription : ISubscription
     {

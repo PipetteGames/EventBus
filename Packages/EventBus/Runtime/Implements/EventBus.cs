@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PipetteGames.Events.Interfaces;
 
-namespace PipetteGames.Events.Implements
+namespace PipetteGames.Events
 {
     public class EventBus : IEventBus
     {
