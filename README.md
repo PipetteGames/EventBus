@@ -84,14 +84,14 @@ _eventBus.Publish(new PlayerDiedEvent { PlayerName = "Player1" });
 
 ### 5. 購読解除
 
-Subscribe は `ISubscription` を返します。これを Dispose することで購読解除できます。
+Subscribe は `IEventSubscription` を返します。これを Dispose することで購読解除できます。
 
 ```csharp
-private ISubscription _subscription;
+private IEventSubscription _subscription;
 
 void Start()
 {
-    // 購読し、ISubscription を保持
+    // 購読し、IEventSubscription を保持
     _subscription = _eventBus.Subscribe<PlayerDiedEvent>(OnPlayerDied);
 }
 
@@ -157,10 +157,10 @@ _eventBus.Subscribe<PlayerDiedEvent>(
 ```csharp
 public interface IEventBus
 {
-    public ISubscription Subscribe<T>(Action<T> handler) where T : IEvent;
-    public ISubscription Subscribe<T>(Action<T> handler, int executionOrder) where T : IEvent;
-    public ISubscription Subscribe<T>(Action<T> handler, Func<T, bool> filter) where T : IEvent;
-    public ISubscription Subscribe<T>(Action<T> handler, int executionOrder, Func<T, bool> filter) where T : IEvent;
+    public IEventSubscription Subscribe<T>(Action<T> handler) where T : IEvent;
+    public IEventSubscription Subscribe<T>(Action<T> handler, int executionOrder) where T : IEvent;
+    public IEventSubscription Subscribe<T>(Action<T> handler, Func<T, bool> filter) where T : IEvent;
+    public IEventSubscription Subscribe<T>(Action<T> handler, int executionOrder, Func<T, bool> filter) where T : IEvent;
     public void Unsubscribe<T>(Action<T> handler) where T : IEvent;
     public void Publish<T>(T eventData) where T : IEvent;
 }
@@ -174,12 +174,12 @@ public interface IEventBus
 public interface IEvent { }
 ```
 
-### ISubscription インターフェース
+### IEventSubscription インターフェース
 
 購読解除用のインターフェース。
 
 ```csharp
-public interface ISubscription : IDisposable { }
+public interface IEventSubscription : IDisposable { }
 ```
 
 ## 注意点
