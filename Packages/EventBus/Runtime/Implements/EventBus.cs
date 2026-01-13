@@ -34,22 +34,22 @@ namespace PipetteGames.Events
             }
         }
 
-        public ISubscription Subscribe<T>(Action<T> handler) where T : IEvent
+        public IEventSubscription Subscribe<T>(Action<T> handler) where T : IEvent
         {
             return Subscribe(handler, DefaultExecutionOrder, null);
         }
 
-        public ISubscription Subscribe<T>(Action<T> handler, int executionOrder) where T : IEvent
+        public IEventSubscription Subscribe<T>(Action<T> handler, int executionOrder) where T : IEvent
         {
             return Subscribe(handler, executionOrder, null);
         }
 
-        public ISubscription Subscribe<T>(Action<T> handler, Func<T, bool> filter) where T : IEvent
+        public IEventSubscription Subscribe<T>(Action<T> handler, Func<T, bool> filter) where T : IEvent
         {
             return Subscribe(handler, DefaultExecutionOrder, filter);
         }
 
-        public ISubscription Subscribe<T>(Action<T> handler, int executionOrder, Func<T, bool> filter) where T : IEvent
+        public IEventSubscription Subscribe<T>(Action<T> handler, int executionOrder, Func<T, bool> filter) where T : IEvent
         {
             lock (_lock)
             {
@@ -69,7 +69,7 @@ namespace PipetteGames.Events
                 }
                 list.Insert(index, info);
                 _isCacheValid = false;
-                return new Subscription(() => Unsubscribe(handler));
+                return new EventSubscription(() => Unsubscribe(handler));
             }
         }
 

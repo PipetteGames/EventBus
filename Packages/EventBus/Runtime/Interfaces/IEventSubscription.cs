@@ -2,7 +2,7 @@ using System;
 
 namespace PipetteGames.Events.Interfaces
 {
-    public interface ISubscription : IDisposable
+    public interface IEventSubscription : IDisposable
     {
 
     }

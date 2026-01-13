@@ -3,11 +3,11 @@ using PipetteGames.Events.Interfaces;
 
 namespace PipetteGames.Events
 {
-    public class Subscription : ISubscription
+    public class EventSubscription : IEventSubscription
     {
         private readonly Action _unsubscribe;
 
-        public Subscription(Action unsubscribe)
+        public EventSubscription(Action unsubscribe)
         {
             _unsubscribe = unsubscribe;
         }
