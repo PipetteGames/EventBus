@@ -31,7 +31,7 @@ Unity で利用可能な汎用的な EventBus パターン実装パッケージ�
 
 URL の末尾にバージョン指定を追加
 
-例: `https://github.com/PipetteGames/EventBus.git?path=Packages/EventBus#v0.2.0`
+例: `https://github.com/PipetteGames/EventBus.git?path=Packages/EventBus#v0.3.0`
 
 ## 基本的な使い方
 
