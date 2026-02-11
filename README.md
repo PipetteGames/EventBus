@@ -167,7 +167,7 @@ public struct DataLoadedEvent : IAwaitableEvent
 
 ### 非同期ハンドラーの購読
 
-非同期ハンドラーは `Func<T, Task>` を使用して購読します。
+非同期ハンドラーは `Func<T, Task>` を使用して購読します。**非同期イベントは実行順序を保証しません**（並列実行される可能性があるため、実行順序指定パラメータはありません）。
 
 ```csharp
 void Start()
@@ -175,10 +175,9 @@ void Start()
     // 非同期ハンドラーを購読
     _eventBus.Subscribe<DataLoadedEvent>(OnDataLoaded);
     
-    // 実行順を指定して購読
-    _eventBus.Subscribe<DataLoadedEvent>(OnDataLoadedOrdered, executionOrder: 5);
+    // フィルター条件を指定して購読
+    _eventBus.Subscribe<DataLoadedEvent>(OnDataLoadedFiltered, filter: e => e.Data.Length > 0);
 }
-
 // 非同期ハンドラー
 private async Task OnDataLoaded(DataLoadedEvent e)
 {
@@ -187,8 +186,9 @@ private async Task OnDataLoaded(DataLoadedEvent e)
     Debug.Log($"データ読み込み完了: {e.Data}");
 }
 
-private async Task OnDataLoadedOrdered(DataLoadedEvent e)
+private async Task OnDataLoadedFiltered(DataLoadedEvent e)
 {
+    // フィルター条件を満たす場合のみ実行
     await ProcessData(e.Data);
 }
 ```
@@ -253,7 +253,7 @@ public interface IEventBus
 
 ```csharp
 public IEventSubscription Subscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent;
-public IEventSubscription Subscribe<T>(Func<T, UniTask> handler, int executionOrder) where T : IAwaitableEvent;
+public IEventSubscription Subscribe<T>(Func<T, UniTask> handler, Func<T, bool> filter) where T : IAwaitableEvent;
 public void Unsubscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent;
 public UniTask PublishAsync<T>(T eventData) where T : IAwaitableEvent;
 ```
@@ -262,7 +262,7 @@ public UniTask PublishAsync<T>(T eventData) where T : IAwaitableEvent;
 
 ```csharp
 public IEventSubscription Subscribe<T>(Func<T, Task> handler) where T : IAwaitableEvent;
-public IEventSubscription Subscribe<T>(Func<T, Task> handler, int executionOrder) where T : IAwaitableEvent;
+public IEventSubscription Subscribe<T>(Func<T, Task> handler, Func<T, bool> filter) where T : IAwaitableEvent;
 public void Unsubscribe<T>(Func<T, Task> handler) where T : IAwaitableEvent;
 public Task PublishAsync<T>(T eventData) where T : IAwaitableEvent;
 ```
