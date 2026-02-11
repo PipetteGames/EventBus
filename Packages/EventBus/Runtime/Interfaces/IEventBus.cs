@@ -55,13 +55,13 @@ namespace PipetteGames.Events.Interfaces
         /// <returns>購読追跡インスタンス</returns>
         public IEventSubscription Subscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent;
         /// <summary>
-        /// 非同期イベントを購読する (実行順序指定付き)
+        /// 非同期イベントを購読する (フィルター付き)
         /// </summary>
         /// <typeparam name="T">購読するイベントの種類</typeparam>
         /// <param name="handler">非同期イベントハンドラー (UniTask型)</param>
-        /// <param name="executionOrder">実行順序</param>
+        /// <param name="filter">フィルター関数</param>
         /// <returns>購読追跡インスタンス</returns>
-        public IEventSubscription Subscribe<T>(Func<T, UniTask> handler, int executionOrder) where T : IAwaitableEvent;
+        public IEventSubscription Subscribe<T>(Func<T, UniTask> handler, Func<T, bool> filter) where T : IAwaitableEvent;
 #else
         /// <summary>
         /// 非同期イベントを購読する
@@ -71,13 +71,13 @@ namespace PipetteGames.Events.Interfaces
         /// <returns>購読追跡インスタンス</returns>
         public IEventSubscription Subscribe<T>(Func<T, Task> handler) where T : IAwaitableEvent;
         /// <summary>
-        /// 非同期イベントを購読する (実行順序指定付き)
+        /// 非同期イベントを購読する (フィルター付き)
         /// </summary>
         /// <typeparam name="T">購読するイベントの種類</typeparam>
         /// <param name="handler">非同期イベントハンドラー (Task型)</param>
-        /// <param name="executionOrder">実行順序</param>
+        /// <param name="filter">フィルター関数</param>
         /// <returns>購読追跡インスタンス</returns>
-        public IEventSubscription Subscribe<T>(Func<T, Task> handler, int executionOrder) where T : IAwaitableEvent;
+        public IEventSubscription Subscribe<T>(Func<T, Task> handler, Func<T, bool> filter) where T : IAwaitableEvent;
 #endif
         
         /// <summary>

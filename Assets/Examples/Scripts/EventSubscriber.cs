@@ -34,8 +34,8 @@ namespace PipetteGames.EventBusExamples
             // 非同期イベント購読
             _subscriptions.Add(eventBus.Subscribe<DemoAsyncEvent>(OnAsyncDemoEvent));
 
-            // 非同期イベント購読 (実行順指定)
-            _subscriptions.Add(eventBus.Subscribe<DemoAsyncEvent>(OnAsyncOrderedEvent, executionOrder: 5));
+            // 非同期イベント購読 (フィルター指定)
+            _subscriptions.Add(eventBus.Subscribe<DemoAsyncEvent>(OnAsyncFilteredEvent, filter: e => e.Value > 100));
         }
 
         private void OnDemoEvent(DemoEvent e)
@@ -67,12 +67,12 @@ namespace PipetteGames.EventBusExamples
             Debug.Log($"Async Completed: {e.Message}");
         }
 
-        private async UniTask OnAsyncOrderedEvent(DemoAsyncEvent e)
+        private async UniTask OnAsyncFilteredEvent(DemoAsyncEvent e)
         {
-            Debug.Log($"Async Ordered Received: {e.Message} (Executed later)");
+            Debug.Log($"Async Filtered Received: {e.Message} (Value: {e.Value})");
             // 非同期処理の例
             await UniTask.Delay(300);
-            Debug.Log($"Async Ordered Completed: {e.Message}");
+            Debug.Log($"Async Filtered Completed: {e.Message}");
         }
 #else
         private async Task OnAsyncDemoEvent(DemoAsyncEvent e)
@@ -83,12 +83,12 @@ namespace PipetteGames.EventBusExamples
             Debug.Log($"Async Completed: {e.Message}");
         }
 
-        private async Task OnAsyncOrderedEvent(DemoAsyncEvent e)
+        private async Task OnAsyncFilteredEvent(DemoAsyncEvent e)
         {
-            Debug.Log($"Async Ordered Received: {e.Message} (Executed later)");
+            Debug.Log($"Async Filtered Received: {e.Message} (Value: {e.Value})");
             // 非同期処理の例
             await Task.Delay(300);
-            Debug.Log($"Async Ordered Completed: {e.Message}");
+            Debug.Log($"Async Filtered Completed: {e.Message}");
         }
 #endif
 

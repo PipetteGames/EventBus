@@ -45,39 +45,27 @@ namespace PipetteGames.Events
         }
 
 #if EVENTBUS_UNITASK_SUPPORT
-        private class AsyncHandlerInfo<T> : IComparable<AsyncHandlerInfo<T>> where T : IAwaitableEvent
+        private class AsyncHandlerInfo<T> where T : IAwaitableEvent
         {
             public Func<T, UniTask> Handler { get; }
-            public int ExecutionOrder { get; }
+            public Func<T, bool> Filter { get; }
 
-            public AsyncHandlerInfo(Func<T, UniTask> handler, int executionOrder)
+            public AsyncHandlerInfo(Func<T, UniTask> handler, Func<T, bool> filter = null)
             {
                 Handler = handler;
-                ExecutionOrder = executionOrder;
-            }
-
-            public int CompareTo(AsyncHandlerInfo<T> other)
-            {
-                // 昇順: 小さい ExecutionOrder が先
-                return ExecutionOrder.CompareTo(other.ExecutionOrder);
+                Filter = filter;
             }
         }
 #else
-        private class AsyncHandlerInfo<T> : IComparable<AsyncHandlerInfo<T>> where T : IAwaitableEvent
+        private class AsyncHandlerInfo<T> where T : IAwaitableEvent
         {
             public Func<T, Task> Handler { get; }
-            public int ExecutionOrder { get; }
+            public Func<T, bool> Filter { get; }
 
-            public AsyncHandlerInfo(Func<T, Task> handler, int executionOrder)
+            public AsyncHandlerInfo(Func<T, Task> handler, Func<T, bool> filter = null)
             {
                 Handler = handler;
-                ExecutionOrder = executionOrder;
-            }
-
-            public int CompareTo(AsyncHandlerInfo<T> other)
-            {
-                // 昇順: 小さい ExecutionOrder が先
-                return ExecutionOrder.CompareTo(other.ExecutionOrder);
+                Filter = filter;
             }
         }
 #endif
@@ -142,10 +130,10 @@ namespace PipetteGames.Events
 #if EVENTBUS_UNITASK_SUPPORT
         public IEventSubscription Subscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent
         {
-            return Subscribe(handler, DefaultExecutionOrder);
+            return Subscribe(handler, null);
         }
 
-        public IEventSubscription Subscribe<T>(Func<T, UniTask> handler, int executionOrder) where T : IAwaitableEvent
+        public IEventSubscription Subscribe<T>(Func<T, UniTask> handler, Func<T, bool> filter) where T : IAwaitableEvent
         {
             lock (_lock)
             {
@@ -156,14 +144,8 @@ namespace PipetteGames.Events
                     _asyncHandlers.Add(type, obj);
                 }
                 var list = (List<AsyncHandlerInfo<T>>)obj;
-                var info = new AsyncHandlerInfo<T>(handler, executionOrder);
-                // 二分探索で挿入位置を決め、ソート維持
-                int index = list.BinarySearch(info);
-                if (index < 0)
-                {
-                    index = ~index;
-                }
-                list.Insert(index, info);
+                var info = new AsyncHandlerInfo<T>(handler, filter);
+                list.Add(info);
                 _isAsyncCacheValid = false;
                 return new EventSubscription(() => Unsubscribe(handler));
             }
@@ -189,10 +171,10 @@ namespace PipetteGames.Events
 #else
         public IEventSubscription Subscribe<T>(Func<T, Task> handler) where T : IAwaitableEvent
         {
-            return Subscribe(handler, DefaultExecutionOrder);
+            return Subscribe(handler, null);
         }
 
-        public IEventSubscription Subscribe<T>(Func<T, Task> handler, int executionOrder) where T : IAwaitableEvent
+        public IEventSubscription Subscribe<T>(Func<T, Task> handler, Func<T, bool> filter) where T : IAwaitableEvent
         {
             lock (_lock)
             {
@@ -203,14 +185,8 @@ namespace PipetteGames.Events
                     _asyncHandlers.Add(type, obj);
                 }
                 var list = (List<AsyncHandlerInfo<T>>)obj;
-                var info = new AsyncHandlerInfo<T>(handler, executionOrder);
-                // 二分探索で挿入位置を決め、ソート維持
-                int index = list.BinarySearch(info);
-                if (index < 0)
-                {
-                    index = ~index;
-                }
-                list.Insert(index, info);
+                var info = new AsyncHandlerInfo<T>(handler, filter);
+                list.Add(info);
                 _isAsyncCacheValid = false;
                 return new EventSubscription(() => Unsubscribe(handler));
             }
@@ -300,6 +276,12 @@ namespace PipetteGames.Events
             {
                 try
                 {
+                    // フィルターチェック
+                    if (info.Filter != null && !info.Filter(eventData))
+                    {
+                        continue;
+                    }
+
                     var task = info.Handler(eventData);
                     tasks.Add(task);
                 }
@@ -341,6 +323,12 @@ namespace PipetteGames.Events
             {
                 try
                 {
+                    // フィルターチェック
+                    if (info.Filter != null && !info.Filter(eventData))
+                    {
+                        continue;
+                    }
+
                     var task = info.Handler(eventData);
                     if (task != null)
                     {
