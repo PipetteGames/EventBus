@@ -150,9 +150,90 @@ _eventBus.Subscribe<PlayerDiedEvent>(
 );
 ```
 
+## 非同期イベント（Async/Await 対応）
+
+### 非同期イベント構造体の定義
+
+`IAwaitableEvent` インターフェースを実装して、非同期対応イベントを定義します。
+
+```csharp
+using PipetteGames.Events.Interfaces;
+
+public struct DataLoadedEvent : IAwaitableEvent
+{
+    public string Data { get; set; }
+}
+```
+
+### 非同期ハンドラーの購読
+
+非同期ハンドラーは `Func<T, Task>` を使用して購読します。
+
+```csharp
+void Start()
+{
+    // 非同期ハンドラーを購読
+    _eventBus.Subscribe<DataLoadedEvent>(OnDataLoaded);
+    
+    // 実行順を指定して購読
+    _eventBus.Subscribe<DataLoadedEvent>(OnDataLoadedOrdered, executionOrder: 5);
+}
+
+// 非同期ハンドラー
+private async Task OnDataLoaded(DataLoadedEvent e)
+{
+    // 非同期処理を実行
+    await LoadRemoteData(e.Data);
+    Debug.Log($"データ読み込み完了: {e.Data}");
+}
+
+private async Task OnDataLoadedOrdered(DataLoadedEvent e)
+{
+    await ProcessData(e.Data);
+}
+```
+
+### 非同期イベントの発行
+
+`PublishAsync` メソッドでイベントを発行し、すべてのハンドラーの完了を待ちます。
+
+```csharp
+public async Task PublishDataEvent()
+{
+    // すべての非同期ハンドラーの完了を待つ
+    await _eventBus.PublishAsync(new DataLoadedEvent { Data = "sample.json" });
+    
+    Debug.Log("すべてのハンドラーが完了しました");
+}
+```
+
+### UniTask 対応
+
+プロジェクトで [UniTask](https://github.com/Cysharp/UniTask) を使用している場合、Project Settings の Script Define Symbols に `UNITASK_EVENTBUS_SUPPORT` を追加することで、`UniTask` 型を利用することができます。
+追加していない場合は、標準の `Task` 型を使用します。
+
+**非同期イベント処理には、UniTask の使用を推奨します。** UniTask は Unity の非同期処理に最適化されており、パフォーマンスと互換性の面で優れています。
+
+```csharp
+// UniTask対応が有効な場合
+private async UniTask OnDataLoaded(DataLoadedEvent e)
+{
+    await UniTask.Delay(500);
+    Debug.Log("データ読み込み完了");
+}
+
+// 発行時
+public async UniTask PublishDataEvent()
+{
+    await _eventBus.PublishAsync(new DataLoadedEvent { Data = "sample" });
+}
+```
+
 ## 簡易 API リファレンス
 
 ### IEventBus インターフェース
+
+#### 同期イベント
 
 ```csharp
 public interface IEventBus
@@ -166,12 +247,40 @@ public interface IEventBus
 }
 ```
 
+#### 非同期イベント
+
+**UNITASK_EVENTBUS_SUPPORT が定義されている場合:**
+
+```csharp
+public IEventSubscription Subscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent;
+public IEventSubscription Subscribe<T>(Func<T, UniTask> handler, int executionOrder) where T : IAwaitableEvent;
+public void Unsubscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent;
+public UniTask PublishAsync<T>(T eventData) where T : IAwaitableEvent;
+```
+
+**UNITASK_EVENTBUS_SUPPORT が定義されていない場合:**
+
+```csharp
+public IEventSubscription Subscribe<T>(Func<T, Task> handler) where T : IAwaitableEvent;
+public IEventSubscription Subscribe<T>(Func<T, Task> handler, int executionOrder) where T : IAwaitableEvent;
+public void Unsubscribe<T>(Func<T, Task> handler) where T : IAwaitableEvent;
+public Task PublishAsync<T>(T eventData) where T : IAwaitableEvent;
+```
+
 ### IEvent インターフェース
 
 イベントクラスが実装するマーカーインターフェース。
 
 ```csharp
 public interface IEvent { }
+```
+
+### IAwaitableEvent インターフェース
+
+非同期イベントクラスが実装するマーカーインターフェース。`IEvent` を継承しています。
+
+```csharp
+public interface IAwaitableEvent : IEvent { }
 ```
 
 ### IEventSubscription インターフェース
@@ -184,9 +293,18 @@ public interface IEventSubscription : IDisposable { }
 
 ## 注意点
 
+### 同期イベント
+
 - **マルチスレッド**: 基本的にシングルスレッド推奨。マルチスレッド使用時は内部 lock で安全。
 - **パフォーマンス**: 購読/購読解除時に実行順ソートが走るため低頻度推奨。頻繁にイベントの有効化/無効化を行う場合は Subscribe/Unsubscribe を使用せず、ハンドラ内で制御を推奨。 Publish は高速。
 - **メモリリーク**: Dispose または Unsubscribe を忘れずに。
+
+### 非同期イベント
+
+- **実行順序**: `PublishAsync` はハンドラーを**順序通りに** 実行し、すべての完了を待ちます。複数のハンドラーは**並行ではなく順序通り**に実行される点に注意してください。
+- **例外処理**: ハンドラー内での例外は `Console.WriteLine(ex)` で記録され、他のハンドラーの実行は継続します。
+- **キャンセル**: `PublishAsync` 中にキャンセルトークンは渡せません。必要に応じてハンドラー内で処理してください。
+- **UniTask 対応**: UniTask を使用するには、Project Settings の Script Define Symbols に `UNITASK_EVENTBUS_SUPPORT` を追加してください。
 
 ## ライセンス
 
