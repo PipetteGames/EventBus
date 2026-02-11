@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
 #else
 using System.Threading.Tasks;
@@ -44,7 +44,7 @@ namespace PipetteGames.Events
             }
         }
 
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
         private class AsyncHandlerInfo<T> : IComparable<AsyncHandlerInfo<T>> where T : IAwaitableEvent
         {
             public Func<T, UniTask> Handler { get; }
@@ -139,7 +139,7 @@ namespace PipetteGames.Events
             }
         }
 
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
         public IEventSubscription Subscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent
         {
             return Subscribe(handler, DefaultExecutionOrder);
@@ -273,7 +273,7 @@ namespace PipetteGames.Events
         }
 
 
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
         public async UniTask PublishAsync<T>(T eventData) where T : IAwaitableEvent
         {
             List<AsyncHandlerInfo<T>> handlersToExecute;

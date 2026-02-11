@@ -209,7 +209,7 @@ public async Task PublishDataEvent()
 
 ### UniTask 対応
 
-プロジェクトで [UniTask](https://github.com/Cysharp/UniTask) を使用している場合、Project Settings の Script Define Symbols に `UNITASK_EVENTBUS_SUPPORT` を追加することで、`UniTask` 型を利用することができます。
+プロジェクトで [UniTask](https://github.com/Cysharp/UniTask) を使用している場合、Project Settings の Script Define Symbols に `EVENTBUS_UNITASK_SUPPORT` を追加することで、`UniTask` 型を利用することができます。
 追加していない場合は、標準の `Task` 型を使用します。
 
 **非同期イベント処理には、UniTask の使用を推奨します。** UniTask は Unity の非同期処理に最適化されており、パフォーマンスと互換性の面で優れています。
@@ -249,7 +249,7 @@ public interface IEventBus
 
 #### 非同期イベント
 
-**UNITASK_EVENTBUS_SUPPORT が定義されている場合:**
+**EVENTBUS_UNITASK_SUPPORT が定義されている場合:**
 
 ```csharp
 public IEventSubscription Subscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent;
@@ -258,7 +258,7 @@ public void Unsubscribe<T>(Func<T, UniTask> handler) where T : IAwaitableEvent;
 public UniTask PublishAsync<T>(T eventData) where T : IAwaitableEvent;
 ```
 
-**UNITASK_EVENTBUS_SUPPORT が定義されていない場合:**
+**EVENTBUS_UNITASK_SUPPORT が定義されていない場合:**
 
 ```csharp
 public IEventSubscription Subscribe<T>(Func<T, Task> handler) where T : IAwaitableEvent;
@@ -304,7 +304,7 @@ public interface IEventSubscription : IDisposable { }
 - **実行順序**: `PublishAsync` はハンドラーを**順序通りに** 実行し、すべての完了を待ちます。複数のハンドラーは**並行ではなく順序通り**に実行される点に注意してください。
 - **例外処理**: ハンドラー内での例外は `Console.WriteLine(ex)` で記録され、他のハンドラーの実行は継続します。
 - **キャンセル**: `PublishAsync` 中にキャンセルトークンは渡せません。必要に応じてハンドラー内で処理してください。
-- **UniTask 対応**: UniTask を使用するには、Project Settings の Script Define Symbols に `UNITASK_EVENTBUS_SUPPORT` を追加してください。
+- **UniTask 対応**: UniTask を使用するには、Project Settings の Script Define Symbols に `EVENTBUS_UNITASK_SUPPORT` を追加してください。
 
 ## ライセンス
 

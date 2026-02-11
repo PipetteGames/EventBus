@@ -580,7 +580,7 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Standalone: UNITASK_EVENTBUS_SUPPORT
+    Standalone: EVENTBUS_UNITASK_SUPPORT
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

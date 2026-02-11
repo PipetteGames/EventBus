@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
 #else
 using System.Threading.Tasks;
@@ -58,7 +58,7 @@ namespace PipetteGames.EventBusExamples
             Debug.Log($"Ordered and Filtered Received: {e.Message} (Value: {e.Value}) (Executed later)");
         }
 
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
         private async UniTask OnAsyncDemoEvent(DemoAsyncEvent e)
         {
             Debug.Log($"Async Received: {e.Message} (Value: {e.Value})");

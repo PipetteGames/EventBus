@@ -1,6 +1,6 @@
 using System;
 
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
 using Cysharp.Threading.Tasks;
 #else
 using System.Threading.Tasks;
@@ -46,7 +46,7 @@ namespace PipetteGames.Events.Interfaces
         /// <returns>購読追跡インスタンス</returns>
         public IEventSubscription Subscribe<T>(Action<T> handler, int executionOrder, Func<T, bool> filter) where T : IEvent;
         
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
         /// <summary>
         /// 非同期イベントを購読する
         /// </summary>
@@ -87,7 +87,7 @@ namespace PipetteGames.Events.Interfaces
         /// <param name="handler">イベントハンドラー</param>
         public void Unsubscribe<T>(Action<T> handler) where T : IEvent;
         
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
         /// <summary>
         /// 非同期イベントの購読を解除する
         /// </summary>
@@ -110,7 +110,7 @@ namespace PipetteGames.Events.Interfaces
         /// <param name="eventData">イベントデータ</param>
         public void Publish<T>(T eventData) where T : IEvent;
         
-#if UNITASK_EVENTBUS_SUPPORT
+#if EVENTBUS_UNITASK_SUPPORT
         /// <summary>
         /// 非同期イベントを発行し、すべてのハンドラーの完了を待つ
         /// </summary>
