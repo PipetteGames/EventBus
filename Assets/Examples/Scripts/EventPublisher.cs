@@ -13,5 +13,12 @@ namespace PipetteGames.EventBusExamples
         {
             EventBusManager.Instance.EventBus.Publish(new DemoEvent { Message = "High Score!", Value = 150 });
         }
+
+        public async void PublishAsyncEvent()
+        {
+            Debug.Log("Publishing Async Event...");
+            await EventBusManager.Instance.EventBus.PublishAsync(new DemoAsyncEvent { Message = "Async Event!" });
+            Debug.Log("Async Event Published");
+        }
     }
 }
