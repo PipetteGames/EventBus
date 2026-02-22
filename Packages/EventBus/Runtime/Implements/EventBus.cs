@@ -18,9 +18,9 @@ namespace PipetteGames.Events
         private readonly Dictionary<Type, object> _cachedHandlers = new();
         private readonly Dictionary<Type, object> _asyncHandlers = new();
         private readonly Dictionary<Type, object> _cachedAsyncHandlers = new();
+        private readonly HashSet<Type> _cacheValidTypes = new();
+        private readonly HashSet<Type> _asyncCacheValidTypes = new();
         private readonly object _lock = new object();
-        private bool _isCacheValid = false;
-        private bool _isAsyncCacheValid = false;
 
         private const int DefaultExecutionOrder = 0;
 
@@ -104,7 +104,7 @@ namespace PipetteGames.Events
                     index = ~index;
                 }
                 list.Insert(index, info);
-                _isCacheValid = false;
+                _cacheValidTypes.Remove(type);
                 return new EventSubscription(() => Unsubscribe(handler));
             }
         }
@@ -122,7 +122,7 @@ namespace PipetteGames.Events
                     {
                         _handlers.Remove(type);
                     }
-                    _isCacheValid = false;
+                    _cacheValidTypes.Remove(type);
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace PipetteGames.Events
                 var list = (List<AsyncHandlerInfo<T>>)obj;
                 var info = new AsyncHandlerInfo<T>(handler, filter);
                 list.Add(info);
-                _isAsyncCacheValid = false;
+                _asyncCacheValidTypes.Remove(type);
                 return new EventSubscription(() => Unsubscribe(handler));
             }
         }
@@ -164,7 +164,7 @@ namespace PipetteGames.Events
                     {
                         _asyncHandlers.Remove(type);
                     }
-                    _isAsyncCacheValid = false;
+                    _asyncCacheValidTypes.Remove(type);
                 }
             }
         }
@@ -187,7 +187,7 @@ namespace PipetteGames.Events
                 var list = (List<AsyncHandlerInfo<T>>)obj;
                 var info = new AsyncHandlerInfo<T>(handler, filter);
                 list.Add(info);
-                _isAsyncCacheValid = false;
+                _asyncCacheValidTypes.Remove(type);
                 return new EventSubscription(() => Unsubscribe(handler));
             }
         }
@@ -205,7 +205,7 @@ namespace PipetteGames.Events
                     {
                         _asyncHandlers.Remove(type);
                     }
-                    _isAsyncCacheValid = false;
+                    _asyncCacheValidTypes.Remove(type);
                 }
             }
         }
@@ -223,11 +223,11 @@ namespace PipetteGames.Events
                     return;
                 }
 
-                if (!_isCacheValid)
+                if (!_cacheValidTypes.Contains(type))
                 {
                     var list = (List<HandlerInfo<T>>)obj;
                     _cachedHandlers[type] = new List<HandlerInfo<T>>(list);
-                    _isCacheValid = true;
+                    _cacheValidTypes.Add(type);
                 }
                 handlersToExecute = (List<HandlerInfo<T>>)_cachedHandlers[type];
             }
@@ -262,11 +262,11 @@ namespace PipetteGames.Events
                     return;
                 }
 
-                if (!_isAsyncCacheValid)
+                if (!_asyncCacheValidTypes.Contains(type))
                 {
                     var list = (List<AsyncHandlerInfo<T>>)obj;
                     _cachedAsyncHandlers[type] = new List<AsyncHandlerInfo<T>>(list);
-                    _isAsyncCacheValid = true;
+                    _asyncCacheValidTypes.Add(type);
                 }
                 handlersToExecute = (List<AsyncHandlerInfo<T>>)_cachedAsyncHandlers[type];
             }
@@ -309,11 +309,11 @@ namespace PipetteGames.Events
                     return;
                 }
 
-                if (!_isAsyncCacheValid)
+                if (!_asyncCacheValidTypes.Contains(type))
                 {
                     var list = (List<AsyncHandlerInfo<T>>)obj;
                     _cachedAsyncHandlers[type] = new List<AsyncHandlerInfo<T>>(list);
-                    _isAsyncCacheValid = true;
+                    _asyncCacheValidTypes.Add(type);
                 }
                 handlersToExecute = (List<AsyncHandlerInfo<T>>)_cachedAsyncHandlers[type];
             }
