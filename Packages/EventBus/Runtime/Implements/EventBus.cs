@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using PipetteGames.Events.Interfaces;
 
+// TODO: Console.WriteLineはUnityEditor上で読み取れないため、再throwするなどの対応が必要
 namespace PipetteGames.Events
 {
     public class EventBus : IEventBus
